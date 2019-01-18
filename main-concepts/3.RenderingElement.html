@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+
+<body>
+  <!-- root DOM 내부의 모든 것은 React DOM이 관리한다 -->
+  <div id="root"></div>
+  <script type="text/babel">
+    // React DOM은 일반 객체이기 때문에 만드는 비용이 싸다. React DOM은 React Element와 일치하도록 DOM을 업데이트 한다. 
+
+    // React Element 를 root DOM에 렌더하기 위해서는 ReactDOM.render()에 React Element와 root DOM을 전달해야한다. 
+    // React Element는 불변. 특정 시간의 UI를 표시할 뿐.요소를 만든 다음에 자식이나 특성을 변경할 수 없다. 
+    // UI를 업데이트 하기 위해서는 새요소를 만들어 ReactDOM.render()에 전달하는 것.
+    // 아래의 예제는 setInterval에 의해 1초마다 tick을 실행한다. > ReactDOM.render()를 호출한다 >화면이 갱신된다. 
+    // setInterval이 없다면 시간은 실행한 시점에서 멈춰있는다 > 갱신되지 않는다.
+    // React는 필요한 부분만 갱신한다. 아래 예제에서는 시간을 표시하는 텍스트 노드만 변경된다. 
+    function tick() {
+      const element = (
+        <div>
+          <h1>Hello, World</h1>
+          <h2>It is {new Date().toLocaleTimeString()}</h2>
+        </div>
+      )
+
+      ReactDOM.render(
+          element,
+          document.getElementById('root')
+        );
+    }
+    setInterval(tick, 1000);
+    </script>
+</body>
+
+</html>

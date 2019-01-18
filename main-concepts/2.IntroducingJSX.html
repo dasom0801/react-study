@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const user = {
+      firstName: 'Dasom',
+      lastName: 'Kim',
+      avatarUrl: ''
+    }
+   /* // JSX에는 Javascript 표현식이 들어갈 수 있다. & JSX자체가 표현식이다. 
+    function formatName(name) {
+      return user.firstName + '  ' + user.lastName;
+    }
+
+    
+    // const element = (
+    //   <h1>
+    //     Hello, {formatName(user)}
+    //   </h1>
+    // );
+
+    const element = getGreeting();
+  
+    function getGreeting(user) {
+      if(user) {
+        return <h1>Hello, {formatName(user)}</h1>
+      } 
+      return <h1>Hello, Stranger.</h1>
+    } */
+    
+    // JavaScript 표현식을 {}로 감싸서 HTML attribute로 사용할 수 있다. {}를 ""로 감싸지 말 것!
+    // 태그가 비어있다면 />를 사용해서 바로 닫을 수 있다. 
+
+    // const element = <img src = {user.avatarUrl} />;
+
+    // React DOM은 렌더링 전에 JSX에 삽입된 모든 값을 이스케이프 처리함. 렌더링 되기전에 모든 것을 문자열로 처리함. > XSS(cross-site-scripting; 사이트 간 스크립팅, 관리자가 아닌 이가 사이트에 악성 스크립트를 삽입하는 취약점) 공격을 방지 할 수 있다. 
+    
+    const element = React.createElement(
+      'h1',
+      {className: 'greeting'},
+      'Hello, World!'
+    );
+    
+  //위의 createElement는 아래와 같은 객체를 만든다. React는 이러한 객체를 읽어서 DOM을 구성하고 최신상태를 유지한다. 
+   /* const element = {
+      type: 'h1',
+      props: {
+        className: 'greeting',
+        children: 'Hello, World!'
+      }
+    }
+  */ 
+    ReactDOM.render(
+        element,
+        document.getElementById('root')
+      );
+
+    </script>
+</body>
+
+</html>

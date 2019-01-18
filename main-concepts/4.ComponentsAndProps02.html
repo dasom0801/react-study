@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    // 아래의 Comment 컴포넌트는 변경하기도 까다롭고 개별 부분(Author, Text, Date)을 재사용하기에도 좋지않다. 
+
+    // function Comment(props) {
+    //   return (
+    //     <div className="Comment">
+    //       <div className="UserInfo">
+    //         <img className="Avatar" 
+    //                 src={props.author.avatarUrl}
+    //                 alt={props.author.name}
+    //         />
+    //         <div className="UserInfo-name">
+    //           {props.author.name}
+    //         </div>
+    //         <div className="Comment-text">
+    //           {props.text}
+    //         </div>
+    //         <div className="Comment-date">
+    //           {formatDate(props.date)}
+    //         </div>
+    //       </div>
+    //     </div>
+    //   );
+    // }
+
+    // 컴포넌트를 작게 나눠봅시다!
+
+    // Avatar 컴포넌트는 자신이 Comment에서 렌더된다는 사실을 알 필요는 없다. 
+    // props의 이름은 컴포넌트가 사용되는 맥락이 아니라, 컴포넌트 자체에 초점을 두고 정하는 것이 좋다. 
+    // 이 경우 props이름은 author가 아닌 user 
+    function Avatar(props) {
+      return (
+        <img className="Avatar" 
+          src={props.user.avatarUrl}
+          alt={props.user.name} 
+        />
+      );
+    }
+
+    function UserInfo(props) {
+      return (
+        <div className="UserInfo">
+          <Avatar user={props.user}/>
+          <div className="UserInfo-name">
+            {props.user.name}
+          </div>
+        </div>
+      );
+    }
+
+    function Comment(props) {
+      return (
+        <div className="Comment">
+        <UserInfo user={props.data.author} />
+          <div className="Comment-text">
+            {props.data.text}
+          </div>
+          <div className="Comment-date">
+            {props.data.date}
+          </div>
+        </div>
+      );
+    }
+
+    const data= {
+      author: {
+        name: "dasom"
+      },
+      text: "Lorem ipsum dolor sit amet",
+      date: "2019-01-18"
+    }
+
+    ReactDOM.render(
+      <Comment data={data} />,
+        document.getElementById('root')
+      );
+
+    </script>
+</body>
+
+</html>
