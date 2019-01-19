@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    //컴포넌트의 상태값 변경은 이벤트 핸들러 함수의 영향을 받는다. 
+    // 폼의 value와 state의 값이 항상 일치한다. 
+    // HTML의 textarea는 태그 내부(자식)에 text값을 갖지만, react는 value속성을 갖는다. 
+    class NameForm extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {value: 'Please write an essay about your favorite DOM element.'};
+        
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+      }
+      
+      handleChange(event) {
+        this.setState({value: event.target.value});
+      }
+
+      handleSubmit(event) {
+        alert('A essay was submmited ' + this.state.value);
+        event.preventDefault();
+      }
+      render () {
+        return (
+          <form onSubmit={this.handleSubmit}>
+            Essay:
+            <textarea value={this.state.value} onChange={this.handleChange} />
+            <input type="submit" value="Submit" />
+          </form>
+        );
+      }
+    }
+
+    ReactDOM.render(
+        <NameForm />,
+        document.getElementById('root')
+    );
+
+    </script>
+</body>
+
+</html>

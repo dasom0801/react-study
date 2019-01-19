@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    // 상태에 따라서 일부만 렌더링 가능.
+    function UserGreeting() {
+      return <h1>Welcome Back!</h1>
+    }
+    function GuestGreeting() {
+      return <h1>Please Sign up.</h1>
+    }
+    function Greeting(props) {
+      const isLoggedIn = props.isLoggedIn;
+      if(isLoggedIn) {
+        return <UserGreeting />
+      }
+      return <GuestGreeting />
+    }
+
+    // 로그인, 로그아웃 버튼 요소
+    function LoginButton(props) {
+      return (
+        <button onClick={props.onClick}>Login</button>
+      );
+    }
+    function LogoutButton(props) {
+      return (
+        <button onClick={props.onClick}>Logout</button>
+      );
+    }
+
+    // 렌더하지 않기 위해서 null을 반환한다.
+    // null을 반환해도 LifeCycle을 실행하는데 영향을 미치지 않는다. 
+    function WarningBanner(props) {
+      if(!props.warn) { return null;}
+      return <div className="warning">warning!</div>
+    }
+
+    // 로그인 컨트롤 컴포넌트
+    class LoginControl extends React.Component {
+      constructor(props) {
+        super(props)
+        this.handleLoginClick = this.handleLoginClick.bind(this);
+        this.handleLogoutClick = this.handleLogoutClick.bind(this);
+        this.state = {isLoggedIn: true}
+      }
+      
+      handleLoginClick() {
+        this.setState({isLoggedIn: true});
+      }
+
+      handleLogoutClick() {
+        this.setState({isLoggedIn: false});
+      }
+
+      render() {
+        const isLoggedIn = this.state.isLoggedIn;
+        let button;
+
+        if(isLoggedIn) {
+          button = <LogoutButton onClick={this.handleLogoutClick} />
+        } else {
+          button = <LoginButton onClick={this.handleLoginClick} />
+        }
+        return (
+          <div>
+            <Greeting isLoggedIn={isLoggedIn} />
+            <p>The user is <b>{isLoggedIn? 'currently': 'not'}</b> logged in.</p>
+            {button} 
+            {isLoggedIn? 
+              (<LogoutButton onClick={this.handleLogoutClick} />)
+              : 
+              (<LoginButton onClick={this.handleLoginClick} />)
+            }
+            <WarningBanner warn={false} />
+          </div>
+        );
+      }
+    }
+    ReactDOM.render(
+      <LoginControl />,
+      document.getElementById('root')
+    );
+    </script>
+</body>
+
+</html>
