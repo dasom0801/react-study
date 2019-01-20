@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    //HTML에서는 option에 selected 속성을 적용하여 선택된 요소를 설정할 수 있지만, React에서는 Select태그의 value값을 사용하여 초기에 선택될 태그를 설정한다. 
+    // ...라고 문서에 적혀있는데 value가 아니라 defaultValue를 사용하니까 적용되었다. 
+    class FlavorForm extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {value: 'coconut'};
+
+        this.handleChange = this.handleChange.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+      }
+      
+      handleChange(event) {
+        this.setState({value: event.target.value});
+      }
+
+      handleSubmit(event) {
+        event.preventDefault();
+        alert('Your favorite flavor is :' + this.state.value);
+      }
+
+      render() {
+        return (
+          <form onSubmit={this.handleSubmit}>
+           <label>Pick your favorite flavor : </label>
+           <select defaultValue={this.state.value} onChange={this.handleChange}>
+             <option value="grapefruit">Grapfruit</option>
+             <option value="lime">Lime</option>
+             <option value="coconut">Coconut</option>
+             <option value="mango">Mango</option>
+           </select>
+           <input type="submit" value="submit" />
+          </form>
+        );
+      }
+    }
+
+    // 여러개의 input 다루기
+    // 각각의 input 요소에 name 속성을 추가하여 관리할 수 있다. 
+
+    class Reservation extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {
+          isGoing: true,
+          numberOfGuests: 2
+        };
+
+        this.handleInputChange = this.handleInputChange.bind(this);
+      }
+
+      handleInputChange(event) {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+          [name]: value
+        });
+      }
+
+      render () {
+        return (
+          (<form>
+            <label>Is going: 
+              <input 
+                name="isGoing"
+                type="checkbox"
+                checked={this.state.isGoing}
+                onChange={this.handleInputChange}
+              />
+            </label>
+            <br />
+            <label>
+              Number of guestes: 
+              <input
+                name="numberOfGuests"
+                type="number"
+                value={this.state.numberOfGuests}
+                onChange={this.handleInputChange}
+              />
+            </label>
+          </form>)
+        );
+      } 
+    }
+
+    ReactDOM.render(
+        <Reservation />,
+        document.getElementById('root')
+    );
+
+    </script>
+</body>
+
+</html>

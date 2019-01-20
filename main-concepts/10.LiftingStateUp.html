@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    //종종 여러 컴포넌트에서 변경된 데이터를 동일하게 반영해야 함.
+
+    function BoilingVerdit(props) {
+      if (props.celsius >= 100) {
+        return <p>The warter would boil.</p>
+      }
+      return <p>The warter wourld not boil.</p> 
+    }
+
+    // 섭씨와 화씨를 변환하는 함수 정의
+    function toCelsius(fahrenheit) {
+      return (fahrenheit - 32)  * 5 / 9;
+    }
+
+    function toFahrenheit(celsius) {
+      return (celsius * 9 / 5) + 32;
+    }
+
+    // 반환값은 세번째 소수점에서 반올림, 잘못된 온도값은 빈 문자열 반환
+    function tryConvert(temperture, convert) {
+      const input = parseFloat(temperture);
+      if(Number.isNaN(input)) {
+        return '';
+      }
+      const output = convert(input);
+      const rounded = Math.round(output * 1000) / 1000;
+      return rounded.toString();
+    }
+
+    const scaleNames = {
+      c: 'Celsius',
+      f: 'Fahrenheit'
+    };
+
+    class TempertuereInput extends React.Component {
+      constructor(props) {
+        super(props);
+        // this.state = {temperture: ''};
+
+        this.handleChange = this.handleChange.bind(this);
+      }
+
+      handleChange(event) {
+        // TemepertureInput의 state라면 setState로 변경할 수 있지만 props는 read only이기 때문에 이 방식으로는 변경할 수 없다. 
+        // this.setState({temperture: event.target.value});
+        // DOM input이 value와 onChange prop을 받는것처럼, 상위 Calculator에서 onTempertureChange props를 허용 할 수 있다. 
+        this.props.onTempertureChange(event.target.value);
+      }
+
+      render() {
+        const temperture = this.props.temperture;
+        const scale = this.props.scale;
+        return (
+          <fieldset>
+            <legend>Enter temperture in {scaleNames[scale]}</legend>
+            <input 
+              value = {temperture}
+              onChange = {this.handleChange}
+            />
+          </fieldset>  
+        );
+      }
+    }
+
+    // Calculator 컴포넌트에 있는 state를 공유하면 TempertureInput 컴포넌트의 값을 동기화할 수 있다. > 일관성 있는 값을 유지함
+    class Calculator extends React.Component {
+      constructor(props) {
+        super(props);
+        this.state = {temperture: '', scale: 'c'};
+
+        this.handleCelsiusChange = this.handleCelsiusChange.bind(this);
+        this.handleFahrenheitChange = this.handleFahrenheitChange.bind(this);
+      }
+
+      handleCelsiusChange(temperture) {
+        this.setState({temperture, scale: 'c'});
+      }
+
+      handleFahrenheitChange(temperture) {
+        this.setState({temperture, scale: 'f'});
+      }
+
+      render() {
+        const scale = this.state.scale;
+        const temperture = this.state.temperture;
+        const celsius = scale === 'f' ? tryConvert(temperture, toCelsius) : temperture;
+        const fahrenheit = scale === 'c' ? tryConvert(temperture, toFahrenheit) : temperture;
+        return (
+          <div>
+            <TempertuereInput 
+              scale="c"
+              temperture={celsius}
+              onTempertureChange={this.handleCelsiusChange} 
+            />
+            <TempertuereInput 
+              scale="f" 
+              temperture={fahrenheit}
+              onTempertureChange={this.handleFahrenheitChange}
+            />
+            <BoilingVerdit 
+              celsius={parseFloat(celsius)}
+            />
+          </div>
+        );
+      }
+    }
+
+    ReactDOM.render(
+        <Calculator/>,
+        document.getElementById('root')
+    );
+
+    // 무슨일이 일어나고 있나요?
+   /*
+      1. input을 수정하면 TemperatureInput 컴포넌트에서 onChange에 연결된 함수를 실행한다. 여기서는 handleChange
+      2. 부모 컴포넌트인 Calculator에서 전달받은 this.props.onTemperatureChange()을 입력값과 함께 호출한다.
+      3. 수정한 input창에 따라서 handleCelsiusChange와 handleFahrenheitChange를 호출
+      4. 이 메소드 안에서 입력받은 값에 따라 setState를 하기 때문에 다시 render한다.
+      5. Calculator이 render 메서드를 호출하여 UI를 확인한다. input의 값은 입력받은 값과 scale값에 따라서 다시 계산된다. 여기서 온도 변환을 수행함
+      6. Calculator에서 지정한 새로운 props와 함께 각각의 TempertureInput의 렌더 메소드를 호출한다. 
+      7. BoilingVerdict 컴포넌트의 render 메소드를 호출하고 celsius를 props로 전달한다.
+      9. BoilingVerdict 컴포넌트를 업데이트한다. 
+   */
+
+   /*
+    state는 일반적으로 필요한 컴포넌트에 먼저 추가하고, 다른 컴포넌트에서도 필요하다면 그것을 가까운 조상요소로 옮긴다.
+    다른 컴포넌트와의 상태를 동기화하려고 하는대신 top-down 데이터 흐름에 의존해야함. 
+   */
+    </script>
+</body>
+
+</html>
