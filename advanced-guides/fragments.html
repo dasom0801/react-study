@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello World</title>
+  <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+
+  <!-- Don't use this in production: -->
+  <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+</head>
+
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    // fragments를 사용하면 DOM에 노드를 추가하지 않고 자식 목록을 그룹화 할 수 있다.
+
+    class Table extends React.Component {
+      render() {
+        return (
+          <table>
+            <tr>
+              <Columns />
+            </tr>
+          </table>
+        );
+      }
+    }
+    // 아래와 같은 형태라면 <tr> 태그 안에 <div>가 포함되어 버린다. 
+    // class Columns extends React.Component {
+    //   render() {
+    //     return (
+    //       <div>
+    //         <td>Hello</td>
+    //         <td>World</td>
+    //       </div>
+    //     );
+    //   }
+    // }
+
+    // Fragments로 문제 해결, <tr>내부에 <div>없이 <td>요소를 삽입 할 수 있다. 
+    class Columns extends React.Component {
+      render() {
+        return (
+          <React.Fragment>
+            <td>Hello</td>
+            <td>World</td>
+          </React.Fragment>
+        );
+      }
+    }
+
+    // Fragment에 key 추가하기
+    // Fragment에 유일하게 전달할 수 있는 속성은 key
+
+    function Glossary (props) {
+      return (
+        <dl>
+          {props.items.map(item => (
+            <React.Fragment key={item.id}>
+              <dt>{item.term}</dt>
+              <dd>{item.description}</dd>
+            </React.Fragment> 
+          ))}
+        </dl>
+      );
+    }
+
+    ReactDOM.render(
+        <Table />,
+        document.getElementById('root')
+      );
+
+    </script>
+</body>
+
+</html>
